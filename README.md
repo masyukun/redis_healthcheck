@@ -101,11 +101,163 @@ You can specify any number of Redis Enterprise clusters here.
  * `accept_secure_certs_only` - If you are using a self-signed cert or the certificate is otherwise not in your local machine's trust store, you can ignore good security practices and force a connection to the server with the `false` value.
 
 
-## Installing plug-ins
+## Installing plugins
+
+Installing plugins with `pip` is just like installing the base application. Plugins come in a few flavors:
+* `collectors` - These provide data to the healthcheck system, such as cluster configuration data or metrics.
+* `detectors` - These diagnose issues or generate reports on the system.
+* `correctors` - These are bundled with some `detectors` and can (optionally) correct detected issues, when possible.
+
+### Installing plugins: collector_configuration
+
+To install the `configuration-collector` plugin, make sure you're in the base project directory and run:
+
+```console
+~/GitHub/redis_healthcheck$ pip install -U -e reht_plugin_configuration
+```
+
+```console
+Obtaining file:///Users/matthewroyal/Documents/GitHub/redis_healthcheck/reht_plugin_configuration
+  Preparing metadata (setup.py) ... done
+Requirement already satisfied: future in ./venv/lib/python3.7/site-packages (from RE-Healthcheck-Plugin-Configuration-Collector==0.0.1) (0.18.2)
+Collecting requests
+  Using cached requests-2.28.1-py3-none-any.whl (62 kB)
+Requirement already satisfied: rich in ./venv/lib/python3.7/site-packages (from RE-Healthcheck-Plugin-Configuration-Collector==0.0.1) (12.5.1)
+Collecting certifi>=2017.4.17
+  Using cached certifi-2022.6.15-py3-none-any.whl (160 kB)
+Collecting charset-normalizer<3,>=2
+  Using cached charset_normalizer-2.1.0-py3-none-any.whl (39 kB)
+Collecting urllib3<1.27,>=1.21.1
+  Using cached urllib3-1.26.11-py2.py3-none-any.whl (139 kB)
+Collecting idna<4,>=2.5
+  Using cached idna-3.3-py3-none-any.whl (61 kB)
+Requirement already satisfied: pygments<3.0.0,>=2.6.0 in ./venv/lib/python3.7/site-packages (from rich->RE-Healthcheck-Plugin-Configuration-Collector==0.0.1) (2.12.0)
+Requirement already satisfied: commonmark<0.10.0,>=0.9.0 in ./venv/lib/python3.7/site-packages (from rich->RE-Healthcheck-Plugin-Configuration-Collector==0.0.1) (0.9.1)
+Requirement already satisfied: typing-extensions<5.0,>=4.0.0 in ./venv/lib/python3.7/site-packages (from rich->RE-Healthcheck-Plugin-Configuration-Collector==0.0.1) (4.3.0)
+Installing collected packages: urllib3, idna, charset-normalizer, certifi, requests, RE-Healthcheck-Plugin-Configuration-Collector
+  Running setup.py develop for RE-Healthcheck-Plugin-Configuration-Collector
+Successfully installed RE-Healthcheck-Plugin-Configuration-Collector-0.0.1 certifi-2022.6.15 charset-normalizer-2.1.0 idna-3.3 requests-2.28.1 urllib3-1.26.11
+```
+
+You can now run the healthcheck app using `redis_healthcheck start` and it will see the plugin you have installed:
+
+```console
+~/GitHub/redis_healthcheck$ redis_healthcheck start
+```
+
+```console
 
 
+ 🏥 Oh hey! Let's do a Redis Healthcheck.
+ 🔌 I'm seeing 1 plugin on this system:
+┏━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Version      ┃ Plugin Name             ┃ Project Name                                  ┃
+┡━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ 0.0.1        │ collector_configuration │ RE-Healthcheck-Plugin-Configuration-Collector │
+└──────────────┴─────────────────────────┴───────────────────────────────────────────────┘
+Loading plugin collector_configuration...
+
+Running plugin type "collect"
+
+Running plugin "collector_configuration"...
+Calling getServerConfiguration for server https://localhost:9443 ...
+Cluster received 41 elements
+LDAP received 12 elements
+ldap_mappings received 0 elements
+roles received 6 elements
+redis_acls received 3 elements
+users received 1 elements
+nodes received 1 elements
+bdbs received 1 elements
+ 📖 Success! Retrieved configuration object from REST API.
+
+
+Running plugin type "detect"
+
+Running plugin type "correct"
+
+```
+
+### Installing plugins: check_nodes
+
+The Check Nodes plugin displays a table of all the nodes in a cluster, and highlights any that have a status other than `active` in red.
+
+To install the `check_nodes` plugin, make sure you're in the base project directory and run:
+
+```console
+~/GitHub/redis_healthcheck$ pip install -U -e reht_plugin_nodestatus
+```
+
+```console
+Obtaining file:///Users/matthewroyal/Documents/GitHub/redis_healthcheck/reht_plugin_nodestatus
+  Preparing metadata (setup.py) ... done
+Requirement already satisfied: future in ./venv/lib/python3.7/site-packages (from RE-Healthcheck-Plugin-Node-Status==0.0.1) (0.18.2)
+Requirement already satisfied: requests in ./venv/lib/python3.7/site-packages (from RE-Healthcheck-Plugin-Node-Status==0.0.1) (2.28.1)
+Requirement already satisfied: rich in ./venv/lib/python3.7/site-packages (from RE-Healthcheck-Plugin-Node-Status==0.0.1) (12.5.1)
+Requirement already satisfied: urllib3<1.27,>=1.21.1 in ./venv/lib/python3.7/site-packages (from requests->RE-Healthcheck-Plugin-Node-Status==0.0.1) (1.26.11)
+Requirement already satisfied: idna<4,>=2.5 in ./venv/lib/python3.7/site-packages (from requests->RE-Healthcheck-Plugin-Node-Status==0.0.1) (3.3)
+Requirement already satisfied: charset-normalizer<3,>=2 in ./venv/lib/python3.7/site-packages (from requests->RE-Healthcheck-Plugin-Node-Status==0.0.1) (2.1.0)
+Requirement already satisfied: certifi>=2017.4.17 in ./venv/lib/python3.7/site-packages (from requests->RE-Healthcheck-Plugin-Node-Status==0.0.1) (2022.6.15)
+Requirement already satisfied: pygments<3.0.0,>=2.6.0 in ./venv/lib/python3.7/site-packages (from rich->RE-Healthcheck-Plugin-Node-Status==0.0.1) (2.12.0)
+Requirement already satisfied: commonmark<0.10.0,>=0.9.0 in ./venv/lib/python3.7/site-packages (from rich->RE-Healthcheck-Plugin-Node-Status==0.0.1) (0.9.1)
+Requirement already satisfied: typing-extensions<5.0,>=4.0.0 in ./venv/lib/python3.7/site-packages (from rich->RE-Healthcheck-Plugin-Node-Status==0.0.1) (4.3.0)
+Installing collected packages: RE-Healthcheck-Plugin-Node-Status
+  Running setup.py develop for RE-Healthcheck-Plugin-Node-Status
+Successfully installed RE-Healthcheck-Plugin-Node-Status-0.0.1
+```
+
+You can now run the healthcheck app using `redis_healthcheck start` and it will see the plugin you have installed:
+
+```console
+~/GitHub/redis_healthcheck$ redis_healthcheck start
+```
+
+```console
+
+
+ 🏥 Oh hey! Let's do a Redis Healthcheck.
+ 🔌 I'm seeing 2 plugins on this system:
+┏━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Version      ┃ Plugin Name             ┃ Project Name                                  ┃
+┡━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ 0.0.1        │ check_nodes             │ RE-Healthcheck-Plugin-Node-Status             │
+│ 0.0.1        │ collector_configuration │ RE-Healthcheck-Plugin-Configuration-Collector │
+└──────────────┴─────────────────────────┴───────────────────────────────────────────────┘
+Loading plugin check_nodes...
+Loading plugin collector_configuration...
+
+Running plugin type "collect"
+
+Running plugin "collector_configuration"...
+Calling getServerConfiguration for server https://localhost:9443 ...
+Cluster received 41 elements
+LDAP received 12 elements
+ldap_mappings received 0 elements
+roles received 6 elements
+redis_acls received 3 elements
+users received 1 elements
+nodes received 1 elements
+bdbs received 1 elements
+ 📖 Success! Retrieved configuration object from REST API.
+
+
+Running plugin type "detect"
+
+Running plugin "check_nodes"...
+Cluster "https://localhost:9443" ...
+┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━┓
+┃ Address    ┃ OS Version         ┃ Shards ┃ Status ┃
+┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━┩
+│ 172.17.0.2 │ Ubuntu 18.04.6 LTS │ 2      │ active │
+└────────────┴────────────────────┴────────┴────────┘
+
+Running plugin type "correct"
+
+```
 
 # CLI Usage Example 
+
+## Without plugins (smoke test)
 
 You can run `redis_healthcheck` by directly invoking it on your command line with the `start` command. Specify the list of servers to use with the `-s` flag. By default, the tool assumes there is a `serverList.json` file in the same directory. 
 
@@ -122,6 +274,30 @@ You can run `redis_healthcheck` by directly invoking it on your command line wit
 ```
 
 Success! Nothing happened -- the base installation has no plugins, so there's nothing to do.
+
+## With plugins
+
+Let's assume you have at least 1 plugin installed. When you run the `redis_healthcheck start` command, you will see a table of all the plugins that the healthcheck app can see:
+
+```console
+~/GitHub/redis_healthcheck$ redis_healthcheck start
+```
+
+```console
+
+
+ 🏥 Oh hey! Let's do a Redis Healthcheck.
+ 🔌 I'm seeing 2 plugins on this system:
+┏━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Version      ┃ Plugin Name             ┃ Project Name                                  ┃
+┡━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ 0.0.1        │ check_nodes             │ RE-Healthcheck-Plugin-Node-Status             │
+│ 0.0.1        │ collector_configuration │ RE-Healthcheck-Plugin-Configuration-Collector │
+└──────────────┴─────────────────────────┴───────────────────────────────────────────────┘
+Loading plugin check_nodes...
+Loading plugin collector_configuration...
+
+```
 
 # Usage options
 

@@ -149,12 +149,13 @@ def start(context):
 
 
   # Run the plugins, in order.
-  for pluginType in PLUGIN_ORDER:
-    print('\nRunning plugin type "{}"'.format(pluginType))
-    for plugin in [p for p in pluginList if "metadata" in p and pluginType in p["metadata"]['type']]:
-      print('\nRunning plugin "{}"...'.format( plugin['name'] ))
-      result = plugin['metadata'][pluginType](context)
-      # print(result)
+  if len(pluginList) > 0:
+    for pluginType in PLUGIN_ORDER:
+      print('\nRunning plugin type "{}"'.format(pluginType))
+      for plugin in [p for p in pluginList if "metadata" in p and pluginType in p["metadata"]['type']]:
+        print('\nRunning plugin "{}"...'.format( plugin['name'] ))
+        result = plugin['metadata'][pluginType](context)
+        # print(result)
 
 
 

@@ -322,3 +322,73 @@ Commands:
   start  Run Redis Healthcheck from CLI
 
 ```
+
+# Developing plugins
+
+The plugin `check_nodes` in the directory `reht_plugin_nodestatus` is a good example of a simple plugin. 
+
+Here's the basic structure of a plugin:
+
+```
+.
+└── my_plugin/
+    ├── src/
+    │   └── redis_healthcheck/
+    │       ├── __init__.py
+    │       └── plugins/
+    │           ├── __init__.py
+    │           └── my_plugin_code/
+    │               ├── __init__.py
+    │               ├── collect.py
+    │               ├── detect.py
+    │               └── correct.py
+    ├── setup.py
+    └── README.md   
+```
+
+It's somewhat cluttered-looking due to the necessary evil of `__init__.py` files. These are required at each directory level by `pip`.
+
+The logic of your plugin will generally go into the `detect.py` file. If you aren't collecting data for the system or fixing anything, you can leave those `collect.py` and `correct.py` out of the project.
+
+Your plugin tells `pip` about the plugin in the `setup.py` file:
+
+```python
+from setuptools import setup
+
+setup(
+    name="RE Healthcheck Plugin - Node Status",
+    version="0.0.1",
+    description="Check the nodes status - a plugin for RE Healthcheck",
+    author="Matthew Royal",
+    author_email="matthew.royal@redis.com",
+    url="https://github.com/masyukun",
+    packages=[
+        "redis_healthcheck",
+        "redis_healthcheck.plugins",
+        "redis_healthcheck.plugins.my_plugin_code",
+    ],
+    package_dir={"": "src"},
+    install_requires=[
+        "future",
+        "requests",
+        "rich",
+    ],
+    entry_points={
+        'redis_healthcheck_plugin': [
+            'my_plugin_name = redis_healthcheck.plugins.my_plugin_code.detect:plugin_metadata',
+        ],
+    },
+)
+```
+
+The only things you'll need to modify in `setup.py` are the `packages`, `install_requires`, and `entry_points`:
+* `packages` - Make sure the last package in the list reflects your actual directory name for the plugin. This can be anything, but I've learned that Python **HATES** hyphens in names, so avoid those.
+* `install_requires` - Other `pip` packages that your project uses. These will be installed as prerequisites for your project.
+* `entry_points` -
+  * This is how the base healthcheck application finds your plugin: it use the Python `pkg_resources` library to find every entrypoint under `redis_healthcheck_plugin`. 
+    * FYI More about this plugin framework: https://www.vinnie.work/blog/2021-02-16-python-plugin-pattern/
+  * Change the name on the left-hand side of the assignment to the name you want folks to see in the plugin table when healthcheck is run.
+  * Change the dotted directory path on the right-hand side of the assignment with the directory structure of your project. `plugin_metadata` is the function run in the `detect.py` file to provide an entry point that returns a metadata object.
+
+
+  

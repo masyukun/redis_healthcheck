@@ -1,11 +1,9 @@
 # redis_healthcheck
 Redis Enterprise Healthcheck Tool with plugin framework. This project is intended to be a Swiss Army Knife style tool for quickly diagnosing common problems in Redis Enterprise clusters.
 
-## Installation
 
-Assuming you have Python 3 installed, you can install everything using the `pip` command either directly from the source <span style="color:red">or from the public PyPi repo (TBD)</span>. 
 
-### Setting up your Python environment
+# Setting up your Python environment
 
 First, set up your environment for this project, so that it's separate from your main `python3` environment. 
 
@@ -41,7 +39,10 @@ To leave the `venv` session, type `deactivate`:
 For the rest of this README, we will assume you are in the environment of your choice, so further console prompts will not necessarily show the `(venv)` prefix.
 
 
-### Installation from source
+
+# Installation from source
+
+Assuming you have Python 3 installed, you can install everything using the `pip` command either directly from the source <span style="color:red">or (TBD) from the public PyPi repo</span>. 
 
 `pip` can build packages from local source files, and *that is the current recommended method of installation during the initial development phase*.
 
@@ -75,9 +76,10 @@ Installing collected packages: commonmark, zipp, typing-extensions, pygments, fu
 Successfully installed click-8.1.3 commonmark-0.9.1 future-0.18.2 importlib-metadata-4.12.0 pygments-2.12.0 redis-healthcheck-0.0.1 rich-12.5.1 typing-extensions-4.3.0 zipp-3.8.1
 ```
 
-### Server List
 
-The `redis_healthcheck` command needs to know where to perform the healthcheck, and for that we use the `serverList.json` file <span style="color:red">or specify the server using an application flag --server (TBD)<server></span>. You should create a file called `serverList.json` in the same directory you run the `redis_healthcheck` command in.
+## Server List
+
+The `redis_healthcheck` command needs to know where to perform the healthcheck, and for that we use the `serverList.json` file <span style="color:red">or (TBD)specify the server using an application flag --server<server></span>. You should create a file called `serverList.json` in the same directory you run the `redis_healthcheck` command in.
 
 Here's a sample `serverList.json` file:
 
@@ -99,16 +101,31 @@ You can specify any number of Redis Enterprise clusters here.
  * `accept_secure_certs_only` - If you are using a self-signed cert or the certificate is otherwise not in your local machine's trust store, you can ignore good security practices and force a connection to the server with the `false` value.
 
 
+## Installing plug-ins
 
 
 
+# CLI Usage Example 
 
-## CLI Usage Example 
+You can run `redis_healthcheck` by directly invoking it on your command line with the `start` command. Specify the list of servers to use with the `-s` flag. By default, the tool assumes there is a `serverList.json` file in the same directory. 
+
+```console
+~/GitHub/redis_healthcheck$ redis_healthcheck -s ./serverList.json start
 
 
-## Usage options
+ 🏥 Oh hey! Let's do a Redis Healthcheck.
+ 🔌 Doesn't look like you have any plugins.
+ 🐍 You can install them with pip. (Plugin list: https://TBD/)
 
-### Application usage
+
+~/GitHub/redis_healthcheck$ 
+```
+
+Success! Nothing happened -- the base installation has no plugins, so there's nothing to do.
+
+# Usage options
+
+## Application usage
 
 ```console
 ~/GitHub/redis_healthcheck$ redis_healthcheck --help

@@ -88,11 +88,11 @@ def validate_fqdn(fqdn):
     print('\n')
     fqdn = fqdn.strip()
     if re.match(r'^.*?://', fqdn):
-        print('Trimming protocol handler in FQDN...')
+        # print('Trimming protocol handler in FQDN...')
         fqdn = re.split(r'^.*?://', fqdn)[-1]
         fqdn = "https://" + fqdn
     if fqdn[-1] == '/':
-        print('Trimming trailing slash in FQDN...')
+        # print('Trimming trailing slash in FQDN...')
         fqdn = fqdn[0:-1]
     return fqdn
 

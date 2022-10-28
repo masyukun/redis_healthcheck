@@ -1,0 +1,14 @@
+{
+  "password_expiration_duration": {
+    "constraint": "!=",
+    "error": true,
+    "value": 0,
+    "message": "Passwords should be set to expire"
+ },
+ "matt_expiration_duration": {
+  "constraint": "!=",
+  "error": true,
+  "value": 0,
+  "message": "Passwords should be set to expire"
+}
+}

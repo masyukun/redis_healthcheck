@@ -1,0 +1,20 @@
+{
+  "min_control_TLS_version": {
+     "constraint": "=",
+     "error": true,
+     "value": "1.2",
+     "message": "Version 1.2 or higher required."
+  },
+  "min_data_TLS_version": {
+      "constraint": "=",
+      "error": true,
+      "value": "1.2",
+      "message": "Version 1.2 or higher required."
+  },
+  "min_sentinel_TLS_version": {
+    "constraint": "=",
+    "error": true,
+    "value": "1.2",
+    "message": "Version 1.2 or higher required."
+  }
+}

@@ -1,0 +1,8 @@
+[
+  {
+    "fqdn": "https://localhost:9443/",
+    "username": "admin@rl.org",
+    "password": "imtheadmin",
+    "accept_secure_certs_only": false
+  }
+]
